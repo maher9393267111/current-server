@@ -7,45 +7,30 @@ api_key: process.env.CLOUDINARY_API_KEY,
 api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-
-
-// req.files.file.path
-const upload = async (req, res) => {
- 
-    try {
-
-
-        const body = req.body;
-
-        console.log(body);
-
-
-
-        res.send(req.body);
-
-    }
+upload = async (req, res) => {
+    let result = await cloudinary.uploader.upload(req.body.image, {
+        folder: "images-ecommerce",
+      public_id: `${Date.now()}`,
+      resource_type: "auto", // jpeg, png
+    });
+    res.json({
+      public_id: result.public_id,
+      url: result.secure_url,
+    });
+  };
 
 
 
+  remove = (req, res) => {
+    let image_id = req.body.public_id;
+  
+    cloudinary.uploader.destroy(image_id, (err, result) => {
+      if (err) return res.json({ success: false, err });
+      res.send("ok");
+    });
+  };
 
 
-
-
-
-
-
-
-catch(err){
-console.log(err)
-
-console.log('whatssssss happpend >>>> here')
-res.status(400).json({message:err})
-
-
-}
-
-
-};
 
 const express = require("express");
 const router = express.Router();
@@ -57,15 +42,7 @@ const router = express.Router();
 
 
 
-const remove = (req, res) => {
-let image_id = req.body.public_id;
 
-cloudinary.uploader.destroy(image_id, (err, result) => {
-if (err) return res.json({ success: false, err });
-res.send('ok');
-});
-
-};
 
 
 
