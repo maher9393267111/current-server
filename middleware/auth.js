@@ -8,7 +8,7 @@ const auth = (req, res, next) =>{
         
        
         if(!token) return res.status(400).json({msg: "Invalid Authentication"})
-console.log('token:------> ', token)
+//console.log('token:------> ', token)
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) =>{
             if(err) return res.status(400).json({msg: "Invalid Authentication"})
 

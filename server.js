@@ -17,7 +17,8 @@ const app = express()
 
 // routes paths
 const userRouter = require('./routes/userRouter')
-
+const categoryRouter = require('./routes/categoryRouter')
+const uploadRouter = require('./routes/upload')
 
 
 
@@ -35,14 +36,14 @@ app.use(fileUpload({
 }))
 
 
+//app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "public")));
-
 
 
 // Routes
  app.use('/user', userRouter)
-// app.use('/api', require('./routes/categoryRouter'))
-// app.use('/api', require('./routes/upload'))
+ app.use('/api', categoryRouter)
+  app.use('/api', uploadRouter)
 // app.use('/api', require('./routes/productRouter'))
 // app.use('/api', require('./routes/paymentRouter'))
 
