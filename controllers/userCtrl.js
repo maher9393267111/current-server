@@ -24,7 +24,10 @@ const userCtrl = {
             await newUser.save()
 
             // Then create jsonwebtoken to authentication
-            const accesstoken = createAccessToken({id: newUser._id})
+           // const accesstoken = createAccessToken({id: newUser._id})
+
+const accesstoken =jwt.sign({id: newUser._id}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1day'})
+
             const refreshtoken = createRefreshToken({id: newUser._id})
 
             console.log('access token: ', accesstoken)
@@ -51,7 +54,9 @@ const userCtrl = {
             if(!isMatch) return res.status(400).json({msg: "Incorrect password."})
 
             // If login success , create access token and refresh token
-            const accesstoken = createAccessToken({id: user._id})
+           // const accesstoken = createAccessToken({id: user._id})
+           console.log(process.env.ACCESS_TOKEN_SECRET)
+           const accesstoken =jwt.sign({id: user._id}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '11d'})
             const refreshtoken = createRefreshToken({id: user._id})
 
             res.cookie('refreshtoken', refreshtoken, {
@@ -63,6 +68,7 @@ const userCtrl = {
             res.json({accesstoken})
 
         } catch (err) {
+            console.log('err: ', err)
             return res.status(500).json({msg: err.message})
         }
     },
@@ -94,6 +100,7 @@ const userCtrl = {
     },
     getUser: async (req, res) =>{
         try {
+            console.log(req.user)
             const user = await Users.findById(req.user.id).select('-password')
             if(!user) return res.status(400).json({msg: "User does not exist."})
 
@@ -134,5 +141,12 @@ const createAccessToken = (user) =>{
 const createRefreshToken = (user) =>{
     return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '7d'})
 }
+
+
+const generateAccessToken = (user)=> {
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "8d" });
+  }
+
+
 
 module.exports = userCtrl
